@@ -87,7 +87,8 @@ export default function addUploadButton(): void {
   extend(TextEditor.prototype, 'onbuild', function (this: any) {
     if (!app.forum.attribute('fof-upload.canUpload')) return;
 
-    const editorEl = this.$('.TextEditor-editor')[0];
+    const editorElements = this.$('.TextEditor-editor').toArray() as HTMLElement[];
+    const editorEl = editorElements.find((element) => element.getClientRects().length > 0) ?? editorElements[0];
     if (editorEl) {
       this.fofPasteClipboard = new PasteClipboard((files) => this.uploader.upload(files), editorEl);
     }
