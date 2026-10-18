@@ -81,20 +81,23 @@ export default function addUploadButton(): void {
     }
   });
 
-  // PasteClipboard must be attached in onbuild, not oncreate.
-  // The .TextEditor-editor element (the textarea) is created by BasicEditorDriver
-  // inside onbuild() — it does not exist yet when oncreate runs.
-  extend(TextEditor.prototype, 'onbuild', function (this: any) {
+  // Bind to the stable editor container so paste continues to work when an
+  // editor implementation is replaced or toggled by another extension.
+  extend(TextEditor.prototype, 'oncreate', function (this: any) {
     if (!app.forum.attribute('fof-upload.canUpload')) return;
 
-    const editorEl = this.$('.TextEditor-editor')[0];
-    if (editorEl) {
-      this.fofPasteClipboard = new PasteClipboard((files) => this.uploader.upload(files), editorEl);
+    const editorContainer = this.$('.TextEditor-editorContainer')[0] as Element | undefined;
+    if (editorContainer) {
+      this.fofPasteClipboard = new PasteClipboard((files) => this.uploader.upload(files), editorContainer);
     }
   });
 
   extend(TextEditor.prototype, 'onremove', function (this: any) {
     if (!app.forum.attribute('fof-upload.canUpload')) return;
+    if (this.fofPasteClipboard) {
+      this.fofPasteClipboard.unload();
+      this.fofPasteClipboard = null;
+    }
     if (this.dragAndDrop) {
       this.dragAndDrop.unload();
     }
