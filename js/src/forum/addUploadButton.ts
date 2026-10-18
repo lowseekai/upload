@@ -10,9 +10,29 @@ import type File from '../common/models/File';
 
 import TextEditor from 'flarum/common/components/TextEditor';
 
+function bindPasteClipboard(editor: any): boolean {
+  if (!app.forum.attribute('fof-upload.canUpload') || !editor.uploader) return false;
+
+  const editorContainer = editor.$?.('.TextEditor-editorContainer')[0] as Element | undefined;
+  if (!editorContainer) return false;
+
+  if (editor.fofPasteClipboardElement === editorContainer) return true;
+
+  editor.fofPasteClipboard?.unload();
+  editor.fofPasteClipboard = new PasteClipboard((files) => editor.uploader.upload(files), editorContainer);
+  editor.fofPasteClipboardElement = editorContainer;
+
+  return true;
+}
+
 export default function addUploadButton(): void {
   extend(TextEditor.prototype, 'oninit', function (this: any) {
     this.uploader = new Uploader();
+
+    this.fofPasteClipboardObserver = new MutationObserver(() => {
+      bindPasteClipboard(this);
+    });
+    this.fofPasteClipboardObserver.observe(document.body, { childList: true, subtree: true });
   });
 
   extend(TextEditor.prototype, 'controlItems', function (this: any, items) {
@@ -81,23 +101,18 @@ export default function addUploadButton(): void {
     }
   });
 
-  // Bind to the stable editor container so paste continues to work when an
-  // editor implementation is replaced or toggled by another extension.
   extend(TextEditor.prototype, 'oncreate', function (this: any) {
-    if (!app.forum.attribute('fof-upload.canUpload')) return;
-
-    const editorContainer = this.$('.TextEditor-editorContainer')[0] as Element | undefined;
-    if (editorContainer) {
-      this.fofPasteClipboard = new PasteClipboard((files) => this.uploader.upload(files), editorContainer);
-    }
+    bindPasteClipboard(this);
   });
 
   extend(TextEditor.prototype, 'onremove', function (this: any) {
-    if (!app.forum.attribute('fof-upload.canUpload')) return;
     if (this.fofPasteClipboard) {
       this.fofPasteClipboard.unload();
       this.fofPasteClipboard = null;
     }
+    this.fofPasteClipboardElement = null;
+    this.fofPasteClipboardObserver?.disconnect();
+    this.fofPasteClipboardObserver = null;
     if (this.dragAndDrop) {
       this.dragAndDrop.unload();
     }
