@@ -1,9 +1,17 @@
 export default class PasteClipboard {
   private upload: (files: File[]) => void;
+  private element: Element;
+  private handler: EventListener;
 
   constructor(upload: (files: globalThis.File[]) => void, element: Element) {
     this.upload = upload;
-    element.addEventListener('paste', this.paste.bind(this) as EventListener);
+    this.element = element;
+    this.handler = this.paste.bind(this) as EventListener;
+    element.addEventListener('paste', this.handler);
+  }
+
+  unload(): void {
+    this.element.removeEventListener('paste', this.handler);
   }
 
   paste(e: ClipboardEvent): void {
