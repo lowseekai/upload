@@ -32,19 +32,21 @@ use FoF\Upload\Helpers\Util;
 use Illuminate\Contracts\Filesystem\Factory;
 
 return [
+    // Since v2.0.4 every upload modal is bundled into the static admin.js /
+    // forum.js bundles, so the legacy chunk directories (js/dist/admin,
+    // js/dist/forum and js/dist/common) no longer exist in the package.
+    // Registering those missing paths with jsDirectory() made Flarum's
+    // Flysystem adapter create them at runtime with private (0700)
+    // permissions; when that happened as root (CLI), the asset compiler could
+    // no longer read them as www-data and the whole forum returned HTTP 500.
     (new Extend\Frontend('admin'))
         ->css(__DIR__.'/resources/less/admin.less')
         ->js(__DIR__.'/js/dist/admin.js')
-        ->jsDirectory(__DIR__.'/js/dist/admin')
         ->content(Content\AdminPayload::class),
 
     (new Extend\Frontend('forum'))
         ->css(__DIR__.'/resources/less/forum.less')
-        ->js(__DIR__.'/js/dist/forum.js')
-        ->jsDirectory(__DIR__.'/js/dist/forum'),
-
-    (new Extend\Frontend('common'))
-        ->jsDirectory(__DIR__.'/js/dist/common'),
+        ->js(__DIR__.'/js/dist/forum.js'),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 
