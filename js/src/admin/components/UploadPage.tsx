@@ -8,6 +8,7 @@ import Placeholder from 'flarum/common/components/Placeholder';
 import UploadImageButton from './UploadImageButton';
 import SettingsTabs, { type SettingsTab } from './SettingsTabs';
 import MimeTypeRow from './MimeTypeRow';
+import InspectMimeModal from './InspectMimeModal';
 import Tooltip from 'flarum/common/components/Tooltip';
 import withAttr from 'flarum/common/utils/withAttr';
 import Stream from 'flarum/common/utils/Stream';
@@ -366,7 +367,7 @@ export default class UploadPage extends ExtensionPage<ExtensionPageAttrs> {
 
           <div className="UploadPage-mimeTypeTools">
             <Select className="UploadPage-presetSelect" options={this.presetOptions()} value="" onchange={(key: string) => this.addPreset(key)} />
-            <Button className="Button" icon="fas fa-magnifying-glass" onclick={() => app.modal.show(() => import('./InspectMimeModal'))}>
+            <Button className="Button" icon="fas fa-magnifying-glass" onclick={() => app.modal.show(InspectMimeModal)}>
               {app.translator.trans('fof-upload.admin.labels.inspect-mime')}
             </Button>
           </div>

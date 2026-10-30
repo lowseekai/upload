@@ -1,5 +1,6 @@
 import app from 'flarum/forum/app';
 import type File from '../../common/models/File';
+import DisplayNameModal from '../components/DisplayNameModal';
 
 /**
  * Templates whose BBCode renders a visible label between the opening and
@@ -87,7 +88,7 @@ export function insertWithDisplayNames(files: File[], insert: (bbcode: string) =
     return;
   }
 
-  app.modal.show(() => import('../components/DisplayNameModal'), {
+  app.modal.show(DisplayNameModal, {
     files: labelled,
     onsubmit: (displayNames: Record<string, string>) => {
       // Preserve the original upload order rather than grouping labelled files

@@ -7,6 +7,7 @@ import UserFileList from '../../common/components/UserFileList';
 import DragAndDrop from './DragAndDrop';
 import ItemList from 'flarum/common/utils/ItemList';
 import SharedFileList from '../../common/components/SharedFileList';
+import UploadSharedFileModal from '../../common/components/UploadSharedFileModal';
 import FileListState from '../../common/states/FileListState';
 import { insertWithDisplayName } from '../utils/applyDisplayName';
 import type Uploader from '../handler/Uploader';
@@ -264,7 +265,7 @@ export default class FileManagerModal extends (Modal as any)<FileManagerModalAtt
 
   showUploadModal() {
     app.modal.show(
-      () => import('../../common/components/UploadSharedFileModal'),
+      UploadSharedFileModal,
       {
         onUploadComplete: (files: File[]) => {
           this.sharedFileState.addToList(files);
