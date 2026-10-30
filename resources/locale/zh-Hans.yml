@@ -1,0 +1,8 @@
+fof-upload:
+  forum:
+    validation:
+      max_size: "超过 {max} KB 的文件不被接受。"
+      too_large: "{filename}（{size}）超过了 {max} 的上传上限。"
+      upload_failed: "上传失败，请重试。"
+    states:
+      loading: 上传中…

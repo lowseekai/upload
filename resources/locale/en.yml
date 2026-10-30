@@ -275,6 +275,8 @@ fof-upload:
 
     validation:
       max_size: "Uploads over {max} kb are not accepted."
+      too_large: "{filename} ({size}) is larger than the {max} upload limit."
+      upload_failed: "The upload failed. Please try again."
 
     text_preview:
       expand: Expand preview

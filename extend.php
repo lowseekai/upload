@@ -109,6 +109,8 @@ return [
                     ->get(fn (object $forum, Context $context) => $context->getActor()->can('fof-upload.upload')),
                 Schema\Boolean::make('fof-upload.canDownload')
                     ->get(fn (object $forum, Context $context) => $context->getActor()->can('fof-upload.download')),
+                Schema\Integer::make('fof-upload.maxFileSize')
+                    ->get(fn () => (int) resolve(SettingsRepositoryInterface::class)->get('fof-upload.maxFileSize', Util::DEFAULT_MAX_FILE_SIZE)),
                 Schema\Str::make('fof-upload.composerButtonVisiblity')
                     ->get(fn () => resolve(SettingsRepositoryInterface::class)->get('fof-upload.composerButtonVisiblity', 'both')),
                 Schema\Str::make('fof-watermarkUrl')
