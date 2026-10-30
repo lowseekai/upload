@@ -6,6 +6,7 @@ import ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 import File from 'src/common/models/File';
 import SharedFileList from '../../common/components/SharedFileList';
+import UploadSharedFileModal from '../../common/components/UploadSharedFileModal';
 import FileListState from '../../common/states/FileListState';
 
 export default class SharedUploadPage<CustomAttrs extends IPageAttrs = IPageAttrs> extends AdminPage<CustomAttrs> {
@@ -43,7 +44,7 @@ export default class SharedUploadPage<CustomAttrs extends IPageAttrs = IPageAttr
   }
 
   showUploadModal() {
-    app.modal.show(() => import('../../common/components/UploadSharedFileModal'), {
+    app.modal.show(UploadSharedFileModal, {
       onUploadComplete: (files: File | File[]) => {
         this.uploadComplete(files);
       },
